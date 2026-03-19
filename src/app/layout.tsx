@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Syne, DM_Sans } from "next/font/google";
+import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 
-const syne = Syne({
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  variable: "--font-syne",
-  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-cormorant",
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
 });
 
 const dmSans = DM_Sans({
@@ -16,12 +17,12 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Gharpayy – Your Perfect PG in Bangalore",
+  title: "Gharpayy – Premium PG Stays in Bangalore",
   description:
-    "Discover premium paying guest accommodations in Koramangala, Bellandur, Whitefield, Mahadevapura & more. Fully furnished, meals included, no hidden fees.",
-  keywords: ["PG in Bangalore", "paying guest", "coliving", "gharpayy", "hostel bangalore"],
+    "Discover curated paying guest accommodations in Koramangala, Bellandur, Whitefield & more. Fully furnished, meals included, zero brokerage.",
+  keywords: ["PG in Bangalore", "paying guest", "coliving", "gharpayy", "premium hostel bangalore"],
   openGraph: {
-    title: "Gharpayy – Your Perfect PG in Bangalore",
+    title: "Gharpayy – Premium PG Stays in Bangalore",
     description: "Find your ideal paying guest accommodation with Gharpayy",
     type: "website",
   },
@@ -29,15 +30,24 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${syne.variable} ${dmSans.variable}`}>
-      <body className="font-body antialiased bg-white text-gray-900">
+    <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
+      <body className="font-sans antialiased" style={{ backgroundColor: "#0F0702" }}>
         {children}
         <Toaster
           position="top-right"
           toastOptions={{
             style: {
-              fontFamily: "var(--font-dm)",
+              fontFamily: "DM Sans, sans-serif",
               borderRadius: "12px",
+              background: "#2A1408",
+              color: "#D6D3D1",
+              border: "1px solid rgba(198,134,66,0.3)",
+            },
+            success: {
+              iconTheme: { primary: "#C68642", secondary: "#0F0702" },
+            },
+            error: {
+              iconTheme: { primary: "#ef4444", secondary: "#0F0702" },
             },
           }}
         />

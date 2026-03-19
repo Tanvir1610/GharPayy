@@ -37,21 +37,17 @@ export default function Navbar() {
     return () => listener.subscription.unsubscribe();
   }, []);
 
-  const isHero = pathname === "/";
-  const navBg = isHero
-    ? scrolled
-      ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100"
-      : "bg-transparent"
-    : "bg-white border-b border-gray-100";
-  const textColor = isHero && !scrolled ? "text-white" : "text-gray-700";
-  const logoColor = isHero && !scrolled ? "text-white" : "text-gray-900";
-
   const handleSignOut = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
     setUser(null);
     router.push("/");
   };
+
+  const isHero = pathname === "/";
+  const navBg = scrolled || !isHero
+    ? "glass border-b border-[rgba(198,134,66,0.12)]"
+    : "bg-transparent";
 
   const navLinks = [
     { href: "/browse", label: "Browse PGs" },
@@ -64,12 +60,16 @@ export default function Navbar() {
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${navBg}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
+
           {/* Logo */}
-          <Link href="/" className={`font-display text-xl font-bold ${logoColor} flex items-center gap-2`}>
-            <div className="w-8 h-8 rounded-xl bg-orange-500 flex items-center justify-center">
-              <Home className="w-4 h-4 text-white" />
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+              style={{ background: "linear-gradient(135deg, #C68642, #E0A15A)" }}>
+              <Home className="w-4 h-4" style={{ color: "#0F0702" }} />
             </div>
-            Gharpayy
+            <span className="font-display text-xl font-bold tracking-wide text-white group-hover:text-[#E0A15A] transition-colors">
+              Gharpayy
+            </span>
           </Link>
 
           {/* Desktop nav */}
@@ -78,7 +78,10 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors ${textColor} hover:text-orange-500 hover:bg-orange-50/50`}
+                className="px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                style={{ color: "#A8A29E" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#E0A15A")}
+                onMouseLeave={e => (e.currentTarget.style.color = "#A8A29E")}
               >
                 {link.label}
               </Link>
@@ -89,36 +92,51 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             {user ? (
               <>
-                <Link
-                  href="/dashboard"
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${textColor} hover:text-orange-500`}
+                <Link href="/dashboard"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                  style={{ color: "#A8A29E" }}
+                  onMouseEnter={e => (e.currentTarget.style.color = "#E0A15A")}
+                  onMouseLeave={e => (e.currentTarget.style.color = "#A8A29E")}
                 >
                   <LayoutDashboard className="w-4 h-4" />
                   Dashboard
                 </Link>
                 {user.role === "admin" && (
-                  <Link href="/admin" className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${textColor} hover:text-orange-500`}>
+                  <Link href="/admin"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                    style={{ color: "#A8A29E" }}
+                    onMouseEnter={e => (e.currentTarget.style.color = "#E0A15A")}
+                    onMouseLeave={e => (e.currentTarget.style.color = "#A8A29E")}
+                  >
                     <Shield className="w-4 h-4" />
                     Admin
                   </Link>
                 )}
-                <button
-                  onClick={handleSignOut}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${textColor} hover:text-red-500`}
+                <button onClick={handleSignOut}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                  style={{ color: "#A8A29E" }}
+                  onMouseEnter={e => (e.currentTarget.style.color = "#ef4444")}
+                  onMouseLeave={e => (e.currentTarget.style.color = "#A8A29E")}
                 >
                   <LogOut className="w-4 h-4" />
                   Sign out
                 </button>
-                <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-semibold text-sm">
+                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
+                  style={{ background: "linear-gradient(135deg,#C68642,#E0A15A)", color: "#0F0702" }}>
                   {user.full_name?.[0]?.toUpperCase() || "U"}
                 </div>
               </>
             ) : (
               <>
-                <Link href="/login" className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${textColor} hover:text-orange-500`}>
+                <Link href="/login"
+                  className="px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                  style={{ color: "#D6D3D1" }}
+                  onMouseEnter={e => (e.currentTarget.style.color = "#E0A15A")}
+                  onMouseLeave={e => (e.currentTarget.style.color = "#D6D3D1")}
+                >
                   Sign in
                 </Link>
-                <Link href="/register" className="btn-primary text-sm px-4 py-2">
+                <Link href="/register" className="btn-primary text-sm px-5 py-2.5">
                   Get Started
                 </Link>
               </>
@@ -127,7 +145,8 @@ export default function Navbar() {
 
           {/* Mobile hamburger */}
           <button
-            className={`md:hidden p-2 rounded-xl ${textColor}`}
+            className="md:hidden p-2 rounded-xl transition-colors"
+            style={{ color: "#D6D3D1" }}
             onClick={() => setOpen(!open)}
           >
             {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -137,33 +156,29 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden bg-white border-t border-gray-100 shadow-lg">
+        <div className="md:hidden border-t" style={{ background: "#1A0D05", borderColor: "rgba(198,134,66,0.15)" }}>
           <div className="px-4 py-4 space-y-1">
             {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="block px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:text-orange-500 hover:bg-orange-50"
+              <Link key={link.href} href={link.href}
+                className="block px-3 py-2.5 rounded-xl text-sm font-medium transition-colors"
+                style={{ color: "#A8A29E" }}
                 onClick={() => setOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
-            <div className="pt-3 border-t border-gray-100 space-y-2">
+            <div className="pt-3 space-y-2" style={{ borderTop: "1px solid rgba(198,134,66,0.1)" }}>
               {user ? (
                 <>
-                  <Link href="/dashboard" className="block px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:text-orange-500 hover:bg-orange-50" onClick={() => setOpen(false)}>
-                    Dashboard
-                  </Link>
-                  <button onClick={handleSignOut} className="w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50">
-                    Sign out
-                  </button>
+                  <Link href="/dashboard" className="block px-3 py-2.5 rounded-xl text-sm font-medium"
+                    style={{ color: "#A8A29E" }} onClick={() => setOpen(false)}>Dashboard</Link>
+                  <button onClick={handleSignOut} className="w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium"
+                    style={{ color: "#ef4444" }}>Sign out</button>
                 </>
               ) : (
                 <>
-                  <Link href="/login" className="block px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700" onClick={() => setOpen(false)}>
-                    Sign in
-                  </Link>
+                  <Link href="/login" className="block px-3 py-2.5 rounded-xl text-sm font-medium"
+                    style={{ color: "#D6D3D1" }} onClick={() => setOpen(false)}>Sign in</Link>
                   <Link href="/register" className="block btn-primary text-center text-sm" onClick={() => setOpen(false)}>
                     Get Started
                   </Link>

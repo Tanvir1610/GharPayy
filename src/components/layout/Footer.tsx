@@ -13,37 +13,54 @@ const LINKS = [
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0f0e22] text-white">
+    <footer style={{ background: "#0F0702", borderTop: "1px solid rgba(198,134,66,0.12)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+
           {/* Brand */}
           <div>
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 rounded-xl bg-orange-500 flex items-center justify-center">
-                <Home className="w-5 h-5 text-white" />
+            <Link href="/" className="flex items-center gap-2.5 mb-5 w-fit">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+                style={{ background: "linear-gradient(135deg,#C68642,#E0A15A)" }}>
+                <Home className="w-4 h-4" style={{ color: "#0F0702" }} />
               </div>
               <span className="font-display text-xl font-bold text-white">Gharpayy</span>
             </Link>
-            <p className="text-gray-400 text-sm leading-relaxed mb-5">
-              Your trusted partner for finding the perfect paying guest accommodation in Bangalore. Zero brokerage, verified properties.
+            <p className="text-sm leading-relaxed mb-6" style={{ color: "#A8A29E" }}>
+              Your trusted partner for premium paying guest accommodation in Bangalore. Zero brokerage, verified properties.
             </p>
             <div className="flex gap-3">
-              <a href="#" className="w-9 h-9 rounded-xl bg-white/10 hover:bg-orange-500 flex items-center justify-center transition-colors">
-                <Instagram className="w-4 h-4" />
-              </a>
-              <a href="#" className="w-9 h-9 rounded-xl bg-white/10 hover:bg-orange-500 flex items-center justify-center transition-colors">
-                <Linkedin className="w-4 h-4" />
-              </a>
+              {[Instagram, Linkedin].map((Icon, i) => (
+                <a key={i} href="#"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200"
+                  style={{ background: "rgba(198,134,66,0.1)", color: "#A8A29E", border: "1px solid rgba(198,134,66,0.15)" }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLElement).style.background = "linear-gradient(135deg,#C68642,#E0A15A)";
+                    (e.currentTarget as HTMLElement).style.color = "#0F0702";
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLElement).style.background = "rgba(198,134,66,0.1)";
+                    (e.currentTarget as HTMLElement).style.color = "#A8A29E";
+                  }}
+                >
+                  <Icon className="w-4 h-4" />
+                </a>
+              ))}
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-display font-semibold text-white mb-4">Quick Links</h4>
+            <h4 className="font-display font-semibold text-white mb-4 text-lg">Quick Links</h4>
             <ul className="space-y-2.5">
               {LINKS.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-gray-400 hover:text-orange-400 text-sm transition-colors">
+                  <Link href={link.href}
+                    className="text-sm transition-colors"
+                    style={{ color: "#A8A29E" }}
+                    onMouseEnter={e => (e.currentTarget.style.color = "#E0A15A")}
+                    onMouseLeave={e => (e.currentTarget.style.color = "#A8A29E")}
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -53,12 +70,17 @@ export default function Footer() {
 
           {/* Areas */}
           <div>
-            <h4 className="font-display font-semibold text-white mb-4">Explore Areas</h4>
+            <h4 className="font-display font-semibold text-white mb-4 text-lg">Explore Areas</h4>
             <ul className="space-y-2.5">
               {AREAS.map((area) => (
                 <li key={area}>
-                  <Link href={`/browse?area=${encodeURIComponent(area)}`} className="text-gray-400 hover:text-orange-400 text-sm transition-colors flex items-center gap-1.5">
-                    <MapPin className="w-3 h-3" />
+                  <Link href={`/browse?area=${encodeURIComponent(area)}`}
+                    className="text-sm flex items-center gap-1.5 transition-colors"
+                    style={{ color: "#A8A29E" }}
+                    onMouseEnter={e => (e.currentTarget.style.color = "#E0A15A")}
+                    onMouseLeave={e => (e.currentTarget.style.color = "#A8A29E")}
+                  >
+                    <MapPin className="w-3 h-3" style={{ color: "#C68642" }} />
                     {area}
                   </Link>
                 </li>
@@ -68,37 +90,43 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="font-display font-semibold text-white mb-4">Contact Us</h4>
+            <h4 className="font-display font-semibold text-white mb-4 text-lg">Contact Us</h4>
             <ul className="space-y-3">
-              <li className="flex items-start gap-3 text-sm text-gray-400">
-                <MapPin className="w-4 h-4 mt-0.5 text-orange-400 shrink-0" />
-                Bangalore, Karnataka, India
-              </li>
-              <li className="flex items-center gap-3 text-sm text-gray-400">
-                <Phone className="w-4 h-4 text-orange-400 shrink-0" />
-                +91 99999 00000
-              </li>
-              <li className="flex items-center gap-3 text-sm text-gray-400">
-                <Mail className="w-4 h-4 text-orange-400 shrink-0" />
-                hello@gharpayy.com
-              </li>
+              {[
+                { icon: MapPin, text: "Bangalore, Karnataka, India" },
+                { icon: Phone, text: "+91 99999 00000" },
+                { icon: Mail,  text: "hello@gharpayy.com" },
+              ].map(({ icon: Icon, text }) => (
+                <li key={text} className="flex items-start gap-3 text-sm" style={{ color: "#A8A29E" }}>
+                  <Icon className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#C68642" }} />
+                  {text}
+                </li>
+              ))}
             </ul>
-            <div className="mt-6 p-4 rounded-xl bg-white/5 border border-white/10">
-              <p className="text-xs text-gray-400 mb-2">Looking for a PG?</p>
-              <Link href="/browse" className="text-orange-400 font-semibold text-sm hover:text-orange-300 transition-colors">
+            <div className="mt-6 p-4 rounded-xl" style={{ background: "rgba(198,134,66,0.08)", border: "1px solid rgba(198,134,66,0.2)" }}>
+              <p className="text-xs mb-2" style={{ color: "#A8A29E" }}>Looking for a PG?</p>
+              <Link href="/browse"
+                className="font-semibold text-sm transition-colors"
+                style={{ color: "#C68642" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#E0A15A")}
+                onMouseLeave={e => (e.currentTarget.style.color = "#C68642")}
+              >
                 Browse all listings →
               </Link>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-gray-500 text-sm">© {new Date().getFullYear()} Gharpayy. All rights reserved.</p>
-          <div className="flex gap-4 text-sm text-gray-500">
-            <Link href="#" className="hover:text-gray-300 transition-colors">Privacy Policy</Link>
-            <Link href="#" className="hover:text-gray-300 transition-colors">Terms of Service</Link>
+        {/* Gold divider */}
+        <div className="my-10 gold-line" />
+
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-sm" style={{ color: "#57534E" }}>
+            © {new Date().getFullYear()} Gharpayy. All rights reserved.
+          </p>
+          <div className="flex gap-5 text-sm" style={{ color: "#57534E" }}>
+            <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>

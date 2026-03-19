@@ -7,18 +7,18 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 const AREAS = [
-  { name: "Koramangala", count: "15+ PGs", icon: "🏙️" },
-  { name: "Bellandur",   count: "8+ PGs",  icon: "🌿" },
-  { name: "Whitefield",  count: "10+ PGs", icon: "🚇" },
-  { name: "Mahadevapura",count: "7+ PGs",  icon: "💼" },
-  { name: "Marathahalli",count: "6+ PGs",  icon: "🏢" },
-  { name: "Electronic City", count: "5+ PGs", icon: "⚡" },
-  { name: "HSR Layout",  count: "4+ PGs",  icon: "🌟" },
-  { name: "Jayanagar",   count: "3+ PGs",  icon: "🏡" },
+  { name: "Koramangala",    count: "15+ PGs", emoji: "🏙️" },
+  { name: "Bellandur",      count: "8+ PGs",  emoji: "🌿" },
+  { name: "Whitefield",     count: "10+ PGs", emoji: "🚇" },
+  { name: "Mahadevapura",   count: "7+ PGs",  emoji: "💼" },
+  { name: "Marathahalli",   count: "6+ PGs",  emoji: "🏢" },
+  { name: "Electronic City",count: "5+ PGs",  emoji: "⚡" },
+  { name: "HSR Layout",     count: "4+ PGs",  emoji: "🌟" },
+  { name: "Jayanagar",      count: "3+ PGs",  emoji: "🏡" },
 ];
 
 const FEATURES = [
-  { icon: Wifi,     title: "All-Inclusive Rent",   desc: "Wi-Fi, electricity & water included in one flat fee." },
+  { icon: Wifi,     title: "All-Inclusive Rent",   desc: "Wi-Fi, electricity & water in one flat fee. No hidden charges." },
   { icon: Utensils, title: "Home-Style Meals",      desc: "3–4 nutritious meals prepared fresh every day." },
   { icon: Shield,   title: "Verified Properties",   desc: "Every PG is personally visited and verified by our team." },
   { icon: Users,    title: "Vibrant Community",     desc: "Meet like-minded professionals and students." },
@@ -52,64 +52,77 @@ export default async function HomePage() {
     .limit(3);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ background: "#0F0702" }}>
       <Navbar />
 
       {/* ── HERO ── */}
-      <section className="hero-gradient relative overflow-hidden pt-24 pb-32">
-        {/* Background decoration */}
+      <section className="relative overflow-hidden pt-24 pb-36" style={{ background: "linear-gradient(135deg,#0F0702 0%,#1A0D05 50%,#2A1408 100%)" }}>
+        {/* Decorative orbs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl" />
-          <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-purple-500/5 rounded-full blur-2xl" />
+          <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full blur-3xl"
+            style={{ background: "radial-gradient(circle, rgba(198,134,66,0.12) 0%, transparent 70%)" }} />
+          <div className="absolute -bottom-16 -left-16 w-80 h-80 rounded-full blur-3xl"
+            style={{ background: "radial-gradient(circle, rgba(198,134,66,0.08) 0%, transparent 70%)" }} />
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-px"
+            style={{ background: "linear-gradient(90deg,transparent,rgba(198,134,66,0.2),transparent)" }} />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white/80 text-sm font-medium mb-6 animate-fade-up-1">
-              <span className="w-2 h-2 rounded-full bg-green-400 ping-slow inline-block" />
-              Rooms available now in Bangalore
-            </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-8 animate-fade-up-1"
+            style={{ background: "rgba(198,134,66,0.1)", border: "1px solid rgba(198,134,66,0.25)", color: "#E0A15A" }}>
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block" />
+            Rooms available now in Bangalore
+          </div>
 
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6 animate-fade-up-2">
-              Find Your Perfect
-              <span className="block text-orange-400 mt-1">PG in Bangalore</span>
-            </h1>
+          {/* Headline */}
+          <h1 className="font-display font-bold leading-tight mb-6 animate-fade-up-2"
+            style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)", color: "#FFFFFF" }}>
+            Find Your Perfect
+            <span className="block gold-text mt-1">PG in Bangalore</span>
+          </h1>
 
-            <p className="text-white/70 text-lg sm:text-xl max-w-2xl mx-auto mb-10 animate-fade-up-3">
-              120+ verified paying guest accommodations across prime Bangalore locations. Fully furnished, meals included, zero brokerage.
-            </p>
+          <p className="text-lg sm:text-xl max-w-2xl mx-auto mb-10 animate-fade-up-3" style={{ color: "#A8A29E" }}>
+            120+ verified paying guest accommodations across prime Bangalore locations.
+            Fully furnished, meals included, zero brokerage.
+          </p>
 
-            {/* Search bar */}
-            <div className="animate-fade-up-4">
-              <HeroSearch />
-            </div>
+          {/* Search */}
+          <div className="animate-fade-up-4">
+            <HeroSearch />
+          </div>
 
-            {/* Quick filters */}
-            <div className="flex flex-wrap justify-center gap-2 mt-6 animate-fade-up-4">
-              {["Boys", "Girls", "Co-live", "Budget", "Premium"].map((tag) => (
-                <Link
-                  key={tag}
-                  href={`/browse?${tag === "Boys" || tag === "Girls" || tag === "Co-live" ? "gender" : "property_type"}=${tag}`}
-                  className="px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white/80 hover:text-white text-sm font-medium transition-all"
-                >
-                  {tag}
-                </Link>
-              ))}
-            </div>
+          {/* Quick filters */}
+          <div className="flex flex-wrap justify-center gap-2 mt-6 animate-fade-up-5">
+            {["Boys", "Girls", "Co-live", "Budget", "Premium"].map((tag) => (
+              <Link key={tag}
+                href={`/browse?${["Boys","Girls","Co-live"].includes(tag) ? "gender" : "property_type"}=${tag}`}
+                className="px-4 py-1.5 rounded-full text-sm font-medium transition-all"
+                style={{ background: "rgba(198,134,66,0.08)", border: "1px solid rgba(198,134,66,0.2)", color: "#A8A29E" }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLElement).style.background = "rgba(198,134,66,0.15)";
+                  (e.currentTarget as HTMLElement).style.color = "#E0A15A";
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLElement).style.background = "rgba(198,134,66,0.08)";
+                  (e.currentTarget as HTMLElement).style.color = "#A8A29E";
+                }}
+              >
+                {tag}
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ── STATS ── */}
-      <section className="bg-white border-b border-gray-100">
+      <section style={{ background: "#1A0D05", borderTop: "1px solid rgba(198,134,66,0.1)", borderBottom: "1px solid rgba(198,134,66,0.1)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {STATS.map((stat) => (
               <div key={stat.label} className="text-center">
-                <div className="font-display text-3xl md:text-4xl font-bold text-orange-500 mb-1">{stat.value}</div>
-                <div className="text-gray-500 text-sm font-medium">{stat.label}</div>
+                <div className="font-display text-3xl md:text-4xl font-bold mb-1 gold-text">{stat.value}</div>
+                <div className="text-sm font-medium" style={{ color: "#A8A29E" }}>{stat.label}</div>
               </div>
             ))}
           </div>
@@ -117,10 +130,13 @@ export default async function HomePage() {
       </section>
 
       {/* ── AREAS ── */}
-      <section className="py-16 bg-[#f8f7ff]">
+      <section className="py-20" style={{ background: "#0F0702" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-8">
+          <div className="flex items-end justify-between mb-10">
             <div>
+              <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: "#C68642" }}>
+                Locations
+              </p>
               <h2 className="section-title">Browse by Area</h2>
               <p className="section-subtitle">Prime locations across Bangalore</p>
             </div>
@@ -130,14 +146,14 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             {AREAS.map((area) => (
-              <Link
-                key={area.name}
-                href={`/browse?area=${encodeURIComponent(area.name)}`}
+              <Link key={area.name} href={`/browse?area=${encodeURIComponent(area.name)}`}
                 className="card card-hover p-5 flex flex-col items-center text-center group"
               >
-                <span className="text-3xl mb-3">{area.icon}</span>
-                <h3 className="font-display font-semibold text-gray-900 group-hover:text-orange-500 transition-colors">{area.name}</h3>
-                <p className="text-sm text-gray-400 mt-1">{area.count}</p>
+                <span className="text-3xl mb-3">{area.emoji}</span>
+                <h3 className="font-display font-semibold text-white group-hover:text-[#E0A15A] transition-colors text-base">
+                  {area.name}
+                </h3>
+                <p className="text-xs mt-1" style={{ color: "#A8A29E" }}>{area.count}</p>
               </Link>
             ))}
           </div>
@@ -146,10 +162,13 @@ export default async function HomePage() {
 
       {/* ── FEATURED PGS ── */}
       {featuredPGs && featuredPGs.length > 0 && (
-        <section className="py-16 bg-white">
+        <section className="py-20" style={{ background: "#1A0D05" }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-end justify-between mb-8">
+            <div className="flex items-end justify-between mb-10">
               <div>
+                <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: "#C68642" }}>
+                  Curated for You
+                </p>
                 <h2 className="section-title">Featured PGs</h2>
                 <p className="section-subtitle">Our top-rated accommodations</p>
               </div>
@@ -157,13 +176,8 @@ export default async function HomePage() {
                 View all <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredPGs.map((pg) => (
-                <PGCard key={pg.id} pg={pg as any} />
-              ))}
-            </div>
-            <div className="text-center mt-8 sm:hidden">
-              <Link href="/browse" className="btn-secondary">View all PGs</Link>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {featuredPGs.map((pg) => <PGCard key={pg.id} pg={pg as any} />)}
             </div>
           </div>
         </section>
@@ -171,10 +185,13 @@ export default async function HomePage() {
 
       {/* ── BUDGET PICKS ── */}
       {budgetPGs && budgetPGs.length > 0 && (
-        <section className="py-16 bg-[#f8f7ff]">
+        <section className="py-20" style={{ background: "#0F0702" }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-end justify-between mb-8">
+            <div className="flex items-end justify-between mb-10">
               <div>
+                <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: "#C68642" }}>
+                  Value Stays
+                </p>
                 <h2 className="section-title">Budget Picks</h2>
                 <p className="section-subtitle">Quality stays under ₹13,000/month</p>
               </div>
@@ -182,30 +199,32 @@ export default async function HomePage() {
                 See more <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {budgetPGs.map((pg) => (
-                <PGCard key={pg.id} pg={pg as any} />
-              ))}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              {budgetPGs.map((pg) => <PGCard key={pg.id} pg={pg as any} />)}
             </div>
           </div>
         </section>
       )}
 
       {/* ── FEATURES ── */}
-      <section className="py-16 bg-white">
+      <section className="py-20" style={{ background: "#1A0D05" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="section-title">Why Choose Gharpayy?</h2>
+          <div className="text-center mb-14">
+            <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: "#C68642" }}>
+              Why Gharpayy
+            </p>
+            <h2 className="section-title">Everything Included</h2>
             <p className="section-subtitle">Everything you need for a comfortable stay</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {FEATURES.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="card p-6 text-center group hover:border-orange-200">
-                <div className="w-12 h-12 rounded-2xl bg-orange-50 group-hover:bg-orange-100 flex items-center justify-center mx-auto mb-4 transition-colors">
-                  <Icon className="w-6 h-6 text-orange-500" />
+              <div key={title} className="card p-6 text-center group">
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all"
+                  style={{ background: "rgba(198,134,66,0.1)", border: "1px solid rgba(198,134,66,0.2)" }}>
+                  <Icon className="w-6 h-6" style={{ color: "#C68642" }} />
                 </div>
-                <h3 className="font-display font-semibold text-gray-900 mb-2">{title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
+                <h3 className="font-display font-semibold text-white mb-2 text-lg">{title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "#A8A29E" }}>{desc}</p>
               </div>
             ))}
           </div>
@@ -213,15 +232,22 @@ export default async function HomePage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-20 hero-gradient relative overflow-hidden">
+      <section className="py-24 relative overflow-hidden" style={{ background: "linear-gradient(135deg,#1A0D05,#2A1408)" }}>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-20 right-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-full"
+            style={{ background: "linear-gradient(180deg,transparent,rgba(198,134,66,0.15),transparent)" }} />
+          <div className="absolute -top-20 right-0 w-64 h-64 rounded-full blur-3xl"
+            style={{ background: "radial-gradient(circle,rgba(198,134,66,0.1) 0%,transparent 70%)" }} />
         </div>
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-white mb-4">
-            Ready to find your home away from home?
+          <p className="text-sm font-semibold uppercase tracking-widest mb-4" style={{ color: "#C68642" }}>
+            Start Today
+          </p>
+          <h2 className="font-display text-3xl sm:text-5xl font-bold text-white mb-5 leading-tight">
+            Ready to find your<br />
+            <span className="gold-text">home away from home?</span>
           </h2>
-          <p className="text-white/70 text-lg mb-8">
+          <p className="text-lg mb-10" style={{ color: "#A8A29E" }}>
             Browse 120+ verified PGs in Bangalore. Zero brokerage, instant booking.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -229,7 +255,7 @@ export default async function HomePage() {
               <Search className="w-5 h-5" />
               Browse PGs
             </Link>
-            <Link href="/browse?type=leads" className="btn-secondary text-base px-8 py-4">
+            <Link href="/post-requirement" className="btn-secondary text-base px-8 py-4">
               Post Requirement
             </Link>
           </div>
