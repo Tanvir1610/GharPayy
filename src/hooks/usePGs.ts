@@ -42,7 +42,7 @@ export function usePGs(filters?: PGFilters) {
       loading: false,
       error: error?.message || null,
     });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
 
   useEffect(() => {
     fetchPGs();

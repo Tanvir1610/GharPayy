@@ -42,7 +42,7 @@ export function useAuth(): AuthState {
     });
 
     return () => subscription.unsubscribe();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
 
   return state;
 }
