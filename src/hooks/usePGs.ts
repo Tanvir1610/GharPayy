@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { PGProperty, PGFilters } from "@/types";
 
@@ -10,45 +10,80 @@ interface State {
 }
 
 export function usePGs(filters?: PGFilters) {
-  const [state, setState] = useState<State>({ pgs: [], loading: true, error: null });
-  const filtersKey = JSON.stringify(filters ?? {});
-  const filtersKeyRef = useRef(filtersKey);
-  filtersKeyRef.current = filtersKey;
+  const [state, setState] = useState<State>({
+    pgs: [],
+    loading: true,
+    error: null,
+  });
 
-  const fetchPGs = useCallback(async () => {
-    setState((s) => ({ ...s, loading: true, error: null }));
-    const supabase = createClient();
-    const f: PGFilters = JSON.parse(filtersKeyRef.current);
-
-    let query = supabase
-      .from("pg_properties")
-      .select("*")
-      .eq("is_approved", true)
-      .eq("is_available", true);
-
-    if (f.area) query = query.ilike("area", `%${f.area}%`);
-    if (f.gender) query = query.eq("gender", f.gender);
-    if (f.property_type) query = query.eq("property_type", f.property_type);
-    if (f.budget_max) query = query.lte("price_double", f.budget_max);
-    if (f.search) {
-      query = query.or(
-        `gharpayy_name.ilike.%${f.search}%,area.ilike.%${f.search}%,locality.ilike.%${f.search}%`
-      );
-    }
-
-    const { data, error } = await query.order("created_at", { ascending: false });
-    setState({
-      pgs: (data || []) as PGProperty[],
-      loading: false,
-      error: error?.message || null,
-    });
-
+  const filtersRef = useRef(filters);
+  filtersRef.current = filters;
 
   useEffect(() => {
-    fetchPGs();
-  }, [fetchPGs, filtersKey]);
+    let cancelled = false;
 
-  return { ...state, refetch: fetchPGs };
+    const fetchData = async () => {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+      const supabase = createClient();
+      const f = filtersRef.current;
+
+      let query = supabase
+        .from("pg_properties")
+        .select("*")
+        .eq("is_approved", true)
+        .eq("is_available", true);
+
+      if (f && f.area) {
+        query = query.ilike("area", "%" + f.area + "%");
+      }
+      if (f && f.gender) {
+        query = query.eq("gender", f.gender);
+      }
+      if (f && f.property_type) {
+        query = query.eq("property_type", f.property_type);
+      }
+      if (f && f.budget_max && f.budget_max > 0) {
+        query = query.lte("price_double", f.budget_max);
+      }
+      if (f && f.search) {
+        query = query.or(
+          "gharpayy_name.ilike.%" +
+            f.search +
+            "%,area.ilike.%" +
+            f.search +
+            "%,locality.ilike.%" +
+            f.search +
+            "%"
+        );
+      }
+
+      const { data, error } = await query.order("created_at", {
+        ascending: false,
+      });
+
+      if (!cancelled) {
+        setState({
+          pgs: (data || []) as PGProperty[],
+          loading: false,
+          error: error ? error.message : null,
+        });
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    filters && filters.area,
+    filters && filters.gender,
+    filters && filters.property_type,
+    filters && filters.budget_max,
+    filters && filters.search,
+  ]);
+
+  return state;
 }
 
 export function usePG(id: string) {
@@ -56,7 +91,10 @@ export function usePG(id: string) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!id) return;
+    if (!id) {
+      setLoading(false);
+      return;
+    }
     const supabase = createClient();
     supabase
       .from("pg_properties")

@@ -11,13 +11,21 @@ interface AuthState {
 }
 
 export function useAuth(): AuthState {
-  const [state, setState] = useState<AuthState>({ user: null, profile: null, loading: true });
+  const [state, setState] = useState<AuthState>({
+    user: null,
+    profile: null,
+    loading: true,
+  });
 
   useEffect(() => {
     const supabase = createClient();
 
     const fetchProfile = async (userId: string): Promise<UserProfile | null> => {
-      const { data } = await supabase.from("profiles").select("*").eq("id", userId).single();
+      const { data } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
       return data as UserProfile | null;
     };
 
@@ -30,19 +38,21 @@ export function useAuth(): AuthState {
       }
     });
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session?.user) {
-        const profile = await fetchProfile(session.user.id);
-        setState({ user: session.user, profile, loading: false });
-      } else {
-        setState({ user: null, profile: null, loading: false });
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        if (session && session.user) {
+          const profile = await fetchProfile(session.user.id);
+          setState({ user: session.user, profile, loading: false });
+        } else {
+          setState({ user: null, profile: null, loading: false });
+        }
       }
-    });
+    );
 
-    return () => subscription.unsubscribe();
-
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
 
   return state;
 }
