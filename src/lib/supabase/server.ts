@@ -1,5 +1,11 @@
-import { createServerClient, type CookieMethodsServer } from "@supabase/ssr";
+import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+
+type CookieToSet = {
+  name: string;
+  value: string;
+  options?: Record<string, unknown>;
+};
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -12,10 +18,10 @@ export async function createClient() {
         getAll() {
           return cookieStore.getAll();
         },
-        setAll(cookiesToSet: Parameters<CookieMethodsServer["setAll"]>[0]) {
+        setAll(cookiesToSet: CookieToSet[]) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              cookieStore.set(name, value, options as any)
             );
           } catch {
             // Called from Server Component — safe to ignore
@@ -37,8 +43,8 @@ export async function createAdminClient() {
         getAll() {
           return cookieStore.getAll();
         },
-        setAll(_cookiesToSet: Parameters<CookieMethodsServer["setAll"]>[0]) {
-          // Admin client doesn't need to set cookies
+        setAll(_cookiesToSet: CookieToSet[]) {
+          // Admin client — no cookies needed
         },
       },
     }
