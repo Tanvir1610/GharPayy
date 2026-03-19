@@ -19,6 +19,13 @@ export function usePGs(filters?: PGFilters) {
   const filtersRef = useRef(filters);
   filtersRef.current = filters;
 
+  // Extract primitive values for the dependency array
+  const depArea = filters ? filters.area : undefined;
+  const depGender = filters ? filters.gender : undefined;
+  const depType = filters ? filters.property_type : undefined;
+  const depBudget = filters ? filters.budget_max : undefined;
+  const depSearch = filters ? filters.search : undefined;
+
   useEffect(() => {
     let cancelled = false;
 
@@ -75,13 +82,7 @@ export function usePGs(filters?: PGFilters) {
     return () => {
       cancelled = true;
     };
-  }, [
-    filters && filters.area,
-    filters && filters.gender,
-    filters && filters.property_type,
-    filters && filters.budget_max,
-    filters && filters.search,
-  ]);
+  }, [depArea, depGender, depType, depBudget, depSearch]);
 
   return state;
 }
