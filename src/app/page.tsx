@@ -3,18 +3,19 @@ import { Wifi, Utensils, Shield, ChevronRight, Search, Users } from "lucide-reac
 import { createClient } from "@/lib/supabase/server";
 import PGCard from "@/components/pg/PGCard";
 import HeroSearch from "@/components/pg/HeroSearch";
+import QuickFilters from "@/components/pg/QuickFilters";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 const AREAS = [
-  { name: "Koramangala",    count: "15+ PGs", emoji: "🏙️" },
-  { name: "Bellandur",      count: "8+ PGs",  emoji: "🌿" },
-  { name: "Whitefield",     count: "10+ PGs", emoji: "🚇" },
-  { name: "Mahadevapura",   count: "7+ PGs",  emoji: "💼" },
-  { name: "Marathahalli",   count: "6+ PGs",  emoji: "🏢" },
-  { name: "Electronic City",count: "5+ PGs",  emoji: "⚡" },
-  { name: "HSR Layout",     count: "4+ PGs",  emoji: "🌟" },
-  { name: "Jayanagar",      count: "3+ PGs",  emoji: "🏡" },
+  { name: "Koramangala",     count: "15+ PGs", emoji: "🏙️" },
+  { name: "Bellandur",       count: "8+ PGs",  emoji: "🌿" },
+  { name: "Whitefield",      count: "10+ PGs", emoji: "🚇" },
+  { name: "Mahadevapura",    count: "7+ PGs",  emoji: "💼" },
+  { name: "Marathahalli",    count: "6+ PGs",  emoji: "🏢" },
+  { name: "Electronic City", count: "5+ PGs",  emoji: "⚡" },
+  { name: "HSR Layout",      count: "4+ PGs",  emoji: "🌟" },
+  { name: "Jayanagar",       count: "3+ PGs",  emoji: "🏡" },
 ];
 
 const FEATURES = [
@@ -33,6 +34,7 @@ const STATS = [
 
 export default async function HomePage() {
   const supabase = await createClient();
+
   const { data: featuredPGs } = await supabase
     .from("pg_properties")
     .select("*")
@@ -56,73 +58,85 @@ export default async function HomePage() {
       <Navbar />
 
       {/* ── HERO ── */}
-      <section className="relative overflow-hidden pt-24 pb-36" style={{ background: "linear-gradient(135deg,#0F0702 0%,#1A0D05 50%,#2A1408 100%)" }}>
+      <section
+        className="relative overflow-hidden pt-24 pb-36"
+        style={{ background: "linear-gradient(135deg,#0F0702 0%,#1A0D05 50%,#2A1408 100%)" }}
+      >
         {/* Decorative orbs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full blur-3xl"
-            style={{ background: "radial-gradient(circle, rgba(198,134,66,0.12) 0%, transparent 70%)" }} />
-          <div className="absolute -bottom-16 -left-16 w-80 h-80 rounded-full blur-3xl"
-            style={{ background: "radial-gradient(circle, rgba(198,134,66,0.08) 0%, transparent 70%)" }} />
-          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-px"
-            style={{ background: "linear-gradient(90deg,transparent,rgba(198,134,66,0.2),transparent)" }} />
+          <div
+            className="absolute -top-32 -right-32 w-96 h-96 rounded-full blur-3xl"
+            style={{ background: "radial-gradient(circle,rgba(198,134,66,0.12) 0%,transparent 70%)" }}
+          />
+          <div
+            className="absolute -bottom-16 -left-16 w-80 h-80 rounded-full blur-3xl"
+            style={{ background: "radial-gradient(circle,rgba(198,134,66,0.08) 0%,transparent 70%)" }}
+          />
+          <div
+            className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-px"
+            style={{ background: "linear-gradient(90deg,transparent,rgba(198,134,66,0.2),transparent)" }}
+          />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-8 animate-fade-up-1"
-            style={{ background: "rgba(198,134,66,0.1)", border: "1px solid rgba(198,134,66,0.25)", color: "#E0A15A" }}>
+          {/* Live badge */}
+          <div
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-8 animate-fade-up-1"
+            style={{
+              background: "rgba(198,134,66,0.1)",
+              border: "1px solid rgba(198,134,66,0.25)",
+              color: "#E0A15A",
+            }}
+          >
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block" />
             Rooms available now in Bangalore
           </div>
 
           {/* Headline */}
-          <h1 className="font-display font-bold leading-tight mb-6 animate-fade-up-2"
-            style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)", color: "#FFFFFF" }}>
+          <h1
+            className="font-display font-bold leading-tight mb-6 animate-fade-up-2"
+            style={{ fontSize: "clamp(2.5rem,6vw,4.5rem)", color: "#FFFFFF" }}
+          >
             Find Your Perfect
             <span className="block gold-text mt-1">PG in Bangalore</span>
           </h1>
 
-          <p className="text-lg sm:text-xl max-w-2xl mx-auto mb-10 animate-fade-up-3" style={{ color: "#A8A29E" }}>
+          <p
+            className="text-lg sm:text-xl max-w-2xl mx-auto mb-10 animate-fade-up-3"
+            style={{ color: "#A8A29E" }}
+          >
             120+ verified paying guest accommodations across prime Bangalore locations.
             Fully furnished, meals included, zero brokerage.
           </p>
 
-          {/* Search */}
+          {/* Search — client component */}
           <div className="animate-fade-up-4">
             <HeroSearch />
           </div>
 
-          {/* Quick filters */}
-          <div className="flex flex-wrap justify-center gap-2 mt-6 animate-fade-up-5">
-            {["Boys", "Girls", "Co-live", "Budget", "Premium"].map((tag) => (
-              <Link key={tag}
-                href={`/browse?${["Boys","Girls","Co-live"].includes(tag) ? "gender" : "property_type"}=${tag}`}
-                className="px-4 py-1.5 rounded-full text-sm font-medium transition-all"
-                style={{ background: "rgba(198,134,66,0.08)", border: "1px solid rgba(198,134,66,0.2)", color: "#A8A29E" }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.background = "rgba(198,134,66,0.15)";
-                  (e.currentTarget as HTMLElement).style.color = "#E0A15A";
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.background = "rgba(198,134,66,0.08)";
-                  (e.currentTarget as HTMLElement).style.color = "#A8A29E";
-                }}
-              >
-                {tag}
-              </Link>
-            ))}
-          </div>
+          {/* Quick filters — client component */}
+          <QuickFilters />
         </div>
       </section>
 
       {/* ── STATS ── */}
-      <section style={{ background: "#1A0D05", borderTop: "1px solid rgba(198,134,66,0.1)", borderBottom: "1px solid rgba(198,134,66,0.1)" }}>
+      <section
+        style={{
+          background: "#1A0D05",
+          borderTop: "1px solid rgba(198,134,66,0.1)",
+          borderBottom: "1px solid rgba(198,134,66,0.1)",
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {STATS.map((stat) => (
               <div key={stat.label} className="text-center">
-                <div className="font-display text-3xl md:text-4xl font-bold mb-1 gold-text">{stat.value}</div>
-                <div className="text-sm font-medium" style={{ color: "#A8A29E" }}>{stat.label}</div>
+                <div className="font-display text-3xl md:text-4xl font-bold mb-1 gold-text">
+                  {stat.value}
+                </div>
+                <div className="text-sm font-medium" style={{ color: "#A8A29E" }}>
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>
@@ -144,16 +158,21 @@ export default async function HomePage() {
               View all <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
+
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             {AREAS.map((area) => (
-              <Link key={area.name} href={`/browse?area=${encodeURIComponent(area.name)}`}
+              <Link
+                key={area.name}
+                href={`/browse?area=${encodeURIComponent(area.name)}`}
                 className="card card-hover p-5 flex flex-col items-center text-center group"
               >
                 <span className="text-3xl mb-3">{area.emoji}</span>
                 <h3 className="font-display font-semibold text-white group-hover:text-[#E0A15A] transition-colors text-base">
                   {area.name}
                 </h3>
-                <p className="text-xs mt-1" style={{ color: "#A8A29E" }}>{area.count}</p>
+                <p className="text-xs mt-1" style={{ color: "#A8A29E" }}>
+                  {area.count}
+                </p>
               </Link>
             ))}
           </div>
@@ -177,7 +196,9 @@ export default async function HomePage() {
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {featuredPGs.map((pg) => <PGCard key={pg.id} pg={pg as any} />)}
+              {featuredPGs.map((pg) => (
+                <PGCard key={pg.id} pg={pg as any} />
+              ))}
             </div>
           </div>
         </section>
@@ -200,7 +221,9 @@ export default async function HomePage() {
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-              {budgetPGs.map((pg) => <PGCard key={pg.id} pg={pg as any} />)}
+              {budgetPGs.map((pg) => (
+                <PGCard key={pg.id} pg={pg as any} />
+              ))}
             </div>
           </div>
         </section>
@@ -219,12 +242,19 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {FEATURES.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="card p-6 text-center group">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all"
-                  style={{ background: "rgba(198,134,66,0.1)", border: "1px solid rgba(198,134,66,0.2)" }}>
+                <div
+                  className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all"
+                  style={{
+                    background: "rgba(198,134,66,0.1)",
+                    border: "1px solid rgba(198,134,66,0.2)",
+                  }}
+                >
                   <Icon className="w-6 h-6" style={{ color: "#C68642" }} />
                 </div>
                 <h3 className="font-display font-semibold text-white mb-2 text-lg">{title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: "#A8A29E" }}>{desc}</p>
+                <p className="text-sm leading-relaxed" style={{ color: "#A8A29E" }}>
+                  {desc}
+                </p>
               </div>
             ))}
           </div>
@@ -232,12 +262,19 @@ export default async function HomePage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-24 relative overflow-hidden" style={{ background: "linear-gradient(135deg,#1A0D05,#2A1408)" }}>
+      <section
+        className="py-24 relative overflow-hidden"
+        style={{ background: "linear-gradient(135deg,#1A0D05,#2A1408)" }}
+      >
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-full"
-            style={{ background: "linear-gradient(180deg,transparent,rgba(198,134,66,0.15),transparent)" }} />
-          <div className="absolute -top-20 right-0 w-64 h-64 rounded-full blur-3xl"
-            style={{ background: "radial-gradient(circle,rgba(198,134,66,0.1) 0%,transparent 70%)" }} />
+          <div
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-full"
+            style={{ background: "linear-gradient(180deg,transparent,rgba(198,134,66,0.15),transparent)" }}
+          />
+          <div
+            className="absolute -top-20 right-0 w-64 h-64 rounded-full blur-3xl"
+            style={{ background: "radial-gradient(circle,rgba(198,134,66,0.1) 0%,transparent 70%)" }}
+          />
         </div>
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-sm font-semibold uppercase tracking-widest mb-4" style={{ color: "#C68642" }}>
