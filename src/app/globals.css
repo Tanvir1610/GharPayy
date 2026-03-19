@@ -1,0 +1,174 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Brand Colors */
+  --brand-orange: #f97316;
+  --brand-orange-dark: #ea580c;
+  --brand-navy: #1a1730;
+  --brand-navy-light: #1e1b4b;
+
+  /* Surfaces */
+  --surface-1: #ffffff;
+  --surface-2: #f8f7ff;
+  --surface-3: #f0effe;
+
+  /* Text */
+  --text-primary: #0f0e22;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+
+  /* Border */
+  --border: #e5e7eb;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-syne), sans-serif;
+  }
+
+  body {
+    font-family: var(--font-dm), sans-serif;
+  }
+}
+
+@layer components {
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-lg shadow-orange-200 hover:shadow-orange-300 hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-900 font-semibold px-6 py-3 rounded-xl border border-gray-200 transition-all duration-200 hover:-translate-y-0.5;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 text-gray-600 hover:text-orange-500 font-medium px-4 py-2 rounded-xl transition-colors duration-200;
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300;
+  }
+
+  .card-hover {
+    @apply hover:-translate-y-1 hover:shadow-xl;
+  }
+
+  /* Inputs */
+  .input {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 font-body text-gray-900 placeholder-gray-400 transition-all;
+  }
+
+  .label {
+    @apply block text-sm font-semibold text-gray-700 mb-1.5;
+  }
+
+  /* Badges */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold;
+  }
+
+  .badge-orange {
+    @apply badge bg-orange-100 text-orange-700;
+  }
+
+  .badge-navy {
+    @apply badge bg-indigo-100 text-indigo-700;
+  }
+
+  .badge-green {
+    @apply badge bg-green-100 text-green-700;
+  }
+
+  .badge-gray {
+    @apply badge bg-gray-100 text-gray-600;
+  }
+
+  /* Section headings */
+  .section-title {
+    @apply font-display text-3xl md:text-4xl font-bold text-gray-900;
+  }
+
+  .section-subtitle {
+    @apply text-gray-500 text-lg mt-2;
+  }
+
+  /* Skeleton loading */
+  .skeleton {
+    @apply bg-gray-100 rounded-xl animate-pulse;
+  }
+
+  /* Scrollbar */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* ─── Hero gradient ──────────────────────────────────────────── */
+.hero-gradient {
+  background: linear-gradient(135deg, #0f0e22 0%, #1e1b4b 60%, #312e81 100%);
+}
+
+/* ─── Glass card ──────────────────────────────────────────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* ─── Page transitions ────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.5s ease forwards;
+}
+
+.animate-fade-up-1 { animation: fadeUp 0.5s 0.1s ease both; }
+.animate-fade-up-2 { animation: fadeUp 0.5s 0.2s ease both; }
+.animate-fade-up-3 { animation: fadeUp 0.5s 0.3s ease both; }
+.animate-fade-up-4 { animation: fadeUp 0.5s 0.4s ease both; }
+
+/* ─── Floating label inputs ───────────────────────────────────── */
+.filter-chip {
+  @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all duration-200;
+}
+
+.filter-chip-active {
+  @apply bg-orange-500 text-white border-orange-500;
+}
+
+.filter-chip-inactive {
+  @apply bg-white text-gray-600 border-gray-200 hover:border-orange-300 hover:text-orange-600;
+}
+
+/* ─── Star rating ─────────────────────────────────────────────── */
+.star-filled { color: #f59e0b; }
+.star-empty  { color: #d1d5db; }
+
+/* ─── Map pin pulse ───────────────────────────────────────────── */
+@keyframes ping-slow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.15); }
+}
+
+.ping-slow {
+  animation: ping-slow 2s ease-in-out infinite;
+}
