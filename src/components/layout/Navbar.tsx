@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, Home, Search, Heart, User, LogOut, LayoutDashboard, Shield } from "lucide-react";
+import { Menu, X, Home, LogOut, LayoutDashboard, Shield } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import type { UserProfile } from "@/types";
 
@@ -12,7 +12,6 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const supabase = createClient();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -21,6 +20,7 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
+    const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) {
         supabase
@@ -47,6 +47,7 @@ export default function Navbar() {
   const logoColor = isHero && !scrolled ? "text-white" : "text-gray-900";
 
   const handleSignOut = async () => {
+    const supabase = createClient();
     await supabase.auth.signOut();
     setUser(null);
     router.push("/");

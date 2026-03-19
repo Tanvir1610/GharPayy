@@ -2,9 +2,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  MapPin, Heart, Share2, Star, Wifi, Utensils, Shield,
-  CheckCircle, Clock, Users, Building2, ChevronLeft,
-  Phone, MessageCircle, Calendar, X, Zap, Home
+  MapPin, Heart, Share2, Star, Utensils, CheckCircle, Clock, Users, Building2, ChevronLeft,
+  MessageCircle, Calendar, Zap, Home
 } from "lucide-react";
 import type { PGProperty } from "@/types";
 import BookingModal from "@/components/booking/BookingModal";

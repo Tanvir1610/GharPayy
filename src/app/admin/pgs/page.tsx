@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Navbar from "@/components/layout/Navbar";
 import Link from "next/link";
-import { Building2, MapPin, Users, Check, X, ExternalLink } from "lucide-react";
+import { MapPin, Check, X, ExternalLink } from "lucide-react";
 
 export const metadata = { title: "Manage PGs | Admin | Gharpayy" };
 

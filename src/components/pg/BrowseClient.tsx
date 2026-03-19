@@ -1,7 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Filter, SlidersHorizontal, X, Search, Grid3X3, List, ChevronDown } from "lucide-react";
+import { SlidersHorizontal, X, Search, Grid3X3, List, ChevronDown } from "lucide-react";
 import PGCard from "./PGCard";
 import type { PGProperty, PGFilters, Gender, PropertyType } from "@/types";
 
@@ -13,7 +12,6 @@ interface Props {
 const AREAS = ["", "Koramangala", "Bellandur", "Whitefield", "Mahadevapura", "Marathahalli", "Electronic City", "HSR Layout", "Jayanagar", "MG Road", "BTM Layout", "Nagawara"];
 const GENDERS: Array<Gender | ""> = ["", "Boys", "Girls", "Co-live"];
 const TYPES: Array<PropertyType | ""> = ["", "Premium", "Mid", "Budget"];
-const ROOM_TYPES = ["Single Sharing", "Double Sharing", "Triple Sharing"];
 const FOOD_TYPES = ["", "Veg", "Non-Veg", "Both", "Self-Cook"];
 const BUDGET_RANGES = [
   { label: "Any", min: 0, max: 0 },

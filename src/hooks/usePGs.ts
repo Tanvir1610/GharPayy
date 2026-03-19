@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { PGProperty, PGFilters } from "@/types";
 
@@ -11,46 +11,62 @@ interface State {
 
 export function usePGs(filters?: PGFilters) {
   const [state, setState] = useState<State>({ pgs: [], loading: true, error: null });
-  const supabase = createClient();
+  const filtersKey = JSON.stringify(filters ?? {});
+  const filtersKeyRef = useRef(filtersKey);
+  filtersKeyRef.current = filtersKey;
 
-  const fetch = useCallback(async () => {
-    setState(s => ({ ...s, loading: true, error: null }));
+  const fetchPGs = useCallback(async () => {
+    setState((s) => ({ ...s, loading: true, error: null }));
+    const supabase = createClient();
+    const f: PGFilters = JSON.parse(filtersKeyRef.current);
+
     let query = supabase
       .from("pg_properties")
       .select("*")
       .eq("is_approved", true)
       .eq("is_available", true);
 
-    if (filters?.area) query = query.ilike("area", `%${filters.area}%`);
-    if (filters?.gender) query = query.eq("gender", filters.gender);
-    if (filters?.property_type) query = query.eq("property_type", filters.property_type);
-    if (filters?.budget_max) query = query.lte("price_double", filters.budget_max);
-    if (filters?.search) {
+    if (f.area) query = query.ilike("area", `%${f.area}%`);
+    if (f.gender) query = query.eq("gender", f.gender);
+    if (f.property_type) query = query.eq("property_type", f.property_type);
+    if (f.budget_max) query = query.lte("price_double", f.budget_max);
+    if (f.search) {
       query = query.or(
-        `gharpayy_name.ilike.%${filters.search}%,area.ilike.%${filters.search}%,locality.ilike.%${filters.search}%`
+        `gharpayy_name.ilike.%${f.search}%,area.ilike.%${f.search}%,locality.ilike.%${f.search}%`
       );
     }
 
     const { data, error } = await query.order("created_at", { ascending: false });
-    setState({ pgs: (data || []) as PGProperty[], loading: false, error: error?.message || null });
-  }, [JSON.stringify(filters)]);
+    setState({
+      pgs: (data || []) as PGProperty[],
+      loading: false,
+      error: error?.message || null,
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => {
+    fetchPGs();
+  }, [fetchPGs, filtersKey]);
 
-  return { ...state, refetch: fetch };
+  return { ...state, refetch: fetchPGs };
 }
 
 export function usePG(id: string) {
   const [pg, setPG] = useState<PGProperty | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
 
   useEffect(() => {
     if (!id) return;
-    supabase.from("pg_properties").select("*").eq("id", id).single().then(({ data }) => {
-      setPG(data as PGProperty | null);
-      setLoading(false);
-    });
+    const supabase = createClient();
+    supabase
+      .from("pg_properties")
+      .select("*")
+      .eq("id", id)
+      .single()
+      .then(({ data }) => {
+        setPG(data as PGProperty | null);
+        setLoading(false);
+      });
   }, [id]);
 
   return { pg, loading };

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { MapPin, Heart, Wifi, Utensils, Users, Star, Building2 } from "lucide-react";
+import { MapPin, Heart, Wifi, Utensils, Star, Building2 } from "lucide-react";
 import type { PGProperty } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import toast from "react-hot-toast";
@@ -25,11 +25,12 @@ const TYPE_COLOR: Record<string, string> = {
 };
 
 function getMinPrice(pg: PGProperty): number | null {
-  const prices = [pg.price_triple, pg.price_double, pg.price_single].filter((p): p is number => p !== null && p > 0);
+  const prices = [pg.price_triple, pg.price_double, pg.price_single].filter(
+    (p): p is number => p !== null && p > 0
+  );
   return prices.length > 0 ? Math.min(...prices) : null;
 }
 
-// Placeholder gradient based on area
 function getAreaGradient(area: string): string {
   const gradients: Record<string, string> = {
     Koramangala: "from-orange-400 to-rose-500",
@@ -51,16 +52,25 @@ export default function PGCard({ pg, saved = false, onSaveToggle }: Props) {
   const [isSaved, setIsSaved] = useState(saved);
   const [loading, setLoading] = useState(false);
   const minPrice = getMinPrice(pg);
-  const supabase = createClient();
 
   const toggleSave = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { toast.error("Sign in to save PGs"); setLoading(false); return; }
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error("Sign in to save PGs");
+      setLoading(false);
+      return;
+    }
     if (isSaved) {
-      await supabase.from("saved_pgs").delete().match({ user_id: user.id, pg_id: pg.id });
+      await supabase
+        .from("saved_pgs")
+        .delete()
+        .match({ user_id: user.id, pg_id: pg.id });
       setIsSaved(false);
       onSaveToggle?.(pg.id, false);
       toast.success("Removed from saved");
@@ -76,23 +86,22 @@ export default function PGCard({ pg, saved = false, onSaveToggle }: Props) {
   return (
     <Link href={`/pg/${pg.id}`} className="card card-hover block overflow-hidden group">
       {/* Image / Gradient */}
-      <div className={`relative h-44 bg-gradient-to-br ${getAreaGradient(pg.area)} overflow-hidden`}>
-        {pg.photos_urls && pg.photos_urls.length > 0 ? (
-          // If real photo available, show it
-          <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-            <Building2 className="w-12 h-12 text-white/40" />
-          </div>
-        ) : (
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <Building2 className="w-10 h-10 text-white/60 mb-2" />
-            <span className="text-white/70 text-xs font-medium">{pg.area}</span>
-          </div>
-        )}
+      <div
+        className={`relative h-44 bg-gradient-to-br ${getAreaGradient(pg.area)} overflow-hidden`}
+      >
+        <div className="absolute inset-0 flex flex-col items-center justify-center opacity-30">
+          <Building2 className="w-10 h-10 text-white mb-2" />
+          <span className="text-white text-xs font-medium">{pg.area}</span>
+        </div>
 
         {/* Badges */}
         <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
-          <span className={`badge ${GENDER_COLOR[pg.gender] || "badge-gray"}`}>{pg.gender}</span>
-          <span className={`badge ${TYPE_COLOR[pg.property_type] || "badge-gray"}`}>{pg.property_type}</span>
+          <span className={`badge ${GENDER_COLOR[pg.gender] || "badge-gray"}`}>
+            {pg.gender}
+          </span>
+          <span className={`badge ${TYPE_COLOR[pg.property_type] || "badge-gray"}`}>
+            {pg.property_type}
+          </span>
         </div>
 
         {/* Save button */}
@@ -101,7 +110,9 @@ export default function PGCard({ pg, saved = false, onSaveToggle }: Props) {
           disabled={loading}
           className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-sm transition-all"
         >
-          <Heart className={`w-4 h-4 ${isSaved ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
+          <Heart
+            className={`w-4 h-4 ${isSaved ? "fill-red-500 text-red-500" : "text-gray-400"}`}
+          />
         </button>
 
         {/* Price tag */}
@@ -137,18 +148,27 @@ export default function PGCard({ pg, saved = false, onSaveToggle }: Props) {
               Wi-Fi
             </span>
           )}
-          {pg.amenities?.includes("Gym") || pg.common_area_features?.includes("Gym") ? (
-            <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-lg">🏋️ Gym</span>
-          ) : null}
+          {(pg.amenities?.includes("Gym") || pg.common_area_features?.includes("Gym")) && (
+            <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-lg">
+              🏋️ Gym
+            </span>
+          )}
           {pg.utilities_included?.includes("All Inclusive") && (
-            <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-lg font-medium">All incl.</span>
+            <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-lg font-medium">
+              All incl.
+            </span>
           )}
         </div>
 
         {/* Room types */}
         <div className="flex flex-wrap gap-1 mb-3">
           {pg.room_types?.slice(0, 3).map((rt) => (
-            <span key={rt} className="text-xs text-gray-500 border border-gray-100 px-2 py-0.5 rounded-full">{rt}</span>
+            <span
+              key={rt}
+              className="text-xs text-gray-500 border border-gray-100 px-2 py-0.5 rounded-full"
+            >
+              {rt}
+            </span>
           ))}
         </div>
 
@@ -168,7 +188,7 @@ export default function PGCard({ pg, saved = false, onSaveToggle }: Props) {
           </div>
           <div className="flex items-center gap-1 text-xs text-gray-400">
             <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-            <span className="font-medium text-gray-600">4.{Math.floor(Math.random() * 3) + 6}</span>
+            <span className="font-medium text-gray-600">4.7</span>
           </div>
         </div>
       </div>

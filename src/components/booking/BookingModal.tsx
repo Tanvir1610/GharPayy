@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { X, Home, CreditCard, Calendar, ChevronDown } from "lucide-react";
+import { X, Home, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -16,29 +16,42 @@ const PAYMENT_METHODS = ["UPI", "Card", "Cash", "Bank Transfer"] as const;
 
 export default function BookingModal({ pg, userId, onClose }: Props) {
   const router = useRouter();
-  const supabase = createClient();
 
   const roomOptions = [
     { label: "Triple Sharing", price: pg.price_triple, key: "Triple Sharing" },
     { label: "Double Sharing", price: pg.price_double, key: "Double Sharing" },
     { label: "Single / Private", price: pg.price_single, key: "Single Sharing" },
-  ].filter(r => r.price && r.price > 0);
+  ].filter((r) => r.price && r.price > 0);
 
-  const [roomType, setRoomType] = useState(roomOptions[1]?.key || roomOptions[0]?.key || "");
+  const [roomType, setRoomType] = useState(
+    roomOptions[1]?.key || roomOptions[0]?.key || ""
+  );
   const [moveInDate, setMoveInDate] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<typeof PAYMENT_METHODS[number]>("UPI");
+  const [paymentMethod, setPaymentMethod] =
+    useState<(typeof PAYMENT_METHODS)[number]>("UPI");
   const [loading, setLoading] = useState(false);
 
-  const selectedRoom = roomOptions.find(r => r.key === roomType);
+  const selectedRoom = roomOptions.find((r) => r.key === roomType);
   const rent = selectedRoom?.price || 0;
-  const deposit = rent; // 1 month deposit
+  const deposit = rent;
 
   const handleBook = async () => {
-    if (!userId) { toast.error("Please sign in first"); router.push("/login"); return; }
-    if (!moveInDate) { toast.error("Please select a move-in date"); return; }
-    if (!roomType) { toast.error("Please select a room type"); return; }
+    if (!userId) {
+      toast.error("Please sign in first");
+      router.push("/login");
+      return;
+    }
+    if (!moveInDate) {
+      toast.error("Please select a move-in date");
+      return;
+    }
+    if (!roomType) {
+      toast.error("Please select a room type");
+      return;
+    }
 
     setLoading(true);
+    const supabase = createClient();
     const { error } = await supabase.from("bookings").insert({
       pg_id: pg.id,
       user_id: userId,
@@ -51,13 +64,15 @@ export default function BookingModal({ pg, userId, onClose }: Props) {
     });
 
     setLoading(false);
-    if (error) { toast.error("Booking failed. Please try again."); return; }
+    if (error) {
+      toast.error("Booking failed. Please try again.");
+      return;
+    }
     toast.success("Booking request sent! We'll confirm shortly.");
     onClose();
     router.push("/dashboard");
   };
 
-  // Today + 1 day min
   const minDate = new Date();
   minDate.setDate(minDate.getDate() + 1);
   const minDateStr = minDate.toISOString().split("T")[0];
@@ -72,7 +87,10 @@ export default function BookingModal({ pg, userId, onClose }: Props) {
             <h2 className="font-display font-bold text-gray-900">Book Your Room</h2>
             <p className="text-sm text-gray-500 mt-0.5">{pg.gharpayy_name}</p>
           </div>
-          <button onClick={onClose} className="p-2 rounded-xl hover:bg-gray-100 transition-colors">
+          <button
+            onClick={onClose}
+            className="p-2 rounded-xl hover:bg-gray-100 transition-colors"
+          >
             <X className="w-5 h-5 text-gray-500" />
           </button>
         </div>
@@ -82,13 +100,29 @@ export default function BookingModal({ pg, userId, onClose }: Props) {
           <div>
             <label className="label">Room Type</label>
             <div className="space-y-2">
-              {roomOptions.map(r => (
-                <label key={r.key} className={`flex items-center justify-between p-3 rounded-xl border-2 cursor-pointer transition-all ${roomType === r.key ? "border-orange-400 bg-orange-50" : "border-gray-100 hover:border-orange-200"}`}>
+              {roomOptions.map((r) => (
+                <label
+                  key={r.key}
+                  className={`flex items-center justify-between p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                    roomType === r.key
+                      ? "border-orange-400 bg-orange-50"
+                      : "border-gray-100 hover:border-orange-200"
+                  }`}
+                >
                   <div className="flex items-center gap-3">
-                    <input type="radio" name="room" value={r.key} checked={roomType === r.key} onChange={() => setRoomType(r.key)} className="accent-orange-500" />
+                    <input
+                      type="radio"
+                      name="room"
+                      value={r.key}
+                      checked={roomType === r.key}
+                      onChange={() => setRoomType(r.key)}
+                      className="accent-orange-500"
+                    />
                     <span className="text-sm font-medium text-gray-700">{r.label}</span>
                   </div>
-                  <span className="font-display font-bold text-orange-500">₹{r.price?.toLocaleString()}/mo</span>
+                  <span className="font-display font-bold text-orange-500">
+                    ₹{r.price?.toLocaleString()}/mo
+                  </span>
                 </label>
               ))}
             </div>
@@ -101,7 +135,7 @@ export default function BookingModal({ pg, userId, onClose }: Props) {
               type="date"
               min={minDateStr}
               value={moveInDate}
-              onChange={e => setMoveInDate(e.target.value)}
+              onChange={(e) => setMoveInDate(e.target.value)}
               className="input"
             />
           </div>
@@ -110,11 +144,15 @@ export default function BookingModal({ pg, userId, onClose }: Props) {
           <div>
             <label className="label">Payment Method</label>
             <div className="grid grid-cols-2 gap-2">
-              {PAYMENT_METHODS.map(pm => (
+              {PAYMENT_METHODS.map((pm) => (
                 <button
                   key={pm}
                   onClick={() => setPaymentMethod(pm)}
-                  className={`p-3 rounded-xl border-2 text-sm font-medium transition-all ${paymentMethod === pm ? "border-orange-400 bg-orange-50 text-orange-600" : "border-gray-100 text-gray-600 hover:border-orange-200"}`}
+                  className={`p-3 rounded-xl border-2 text-sm font-medium transition-all ${
+                    paymentMethod === pm
+                      ? "border-orange-400 bg-orange-50 text-orange-600"
+                      : "border-gray-100 text-gray-600 hover:border-orange-200"
+                  }`}
                 >
                   {pm}
                 </button>
@@ -140,9 +178,13 @@ export default function BookingModal({ pg, userId, onClose }: Props) {
             </div>
           )}
 
-          <button onClick={handleBook} disabled={loading} className="btn-primary w-full py-4 justify-center text-base">
+          <button
+            onClick={handleBook}
+            disabled={loading}
+            className="btn-primary w-full py-4 justify-center text-base"
+          >
             {loading ? (
-              <div className="w-5 h-5 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+              <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
               <>
                 <Home className="w-5 h-5" />

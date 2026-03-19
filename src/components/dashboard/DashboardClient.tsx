@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Home, Heart, Calendar, User, MapPin, Clock, CheckCircle, XCircle, AlertCircle, ChevronRight, Star } from "lucide-react";
+import { Home, Heart, Calendar, User, MapPin, Clock, CheckCircle, XCircle, AlertCircle, ChevronRight } from "lucide-react";
 import type { UserProfile } from "@/types";
 
 interface Props {

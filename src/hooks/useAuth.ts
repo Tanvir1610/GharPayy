@@ -12,10 +12,11 @@ interface AuthState {
 
 export function useAuth(): AuthState {
   const [state, setState] = useState<AuthState>({ user: null, profile: null, loading: true });
-  const supabase = createClient();
 
   useEffect(() => {
-    const fetchProfile = async (userId: string) => {
+    const supabase = createClient();
+
+    const fetchProfile = async (userId: string): Promise<UserProfile | null> => {
       const { data } = await supabase.from("profiles").select("*").eq("id", userId).single();
       return data as UserProfile | null;
     };
@@ -29,7 +30,9 @@ export function useAuth(): AuthState {
       }
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
         const profile = await fetchProfile(session.user.id);
         setState({ user: session.user, profile, loading: false });
@@ -39,7 +42,7 @@ export function useAuth(): AuthState {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return state;
 }

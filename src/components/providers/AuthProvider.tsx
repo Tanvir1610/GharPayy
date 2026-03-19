@@ -12,7 +12,9 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType>({
-  user: null, profile: null, loading: true,
+  user: null,
+  profile: null,
+  loading: true,
   signOut: async () => {},
 });
 
@@ -20,21 +22,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
-
-  const fetchProfile = async (uid: string) => {
-    const { data } = await supabase.from("profiles").select("*").eq("id", uid).single();
-    setProfile(data as UserProfile | null);
-  };
 
   useEffect(() => {
+    const supabase = createClient();
+
+    const fetchProfile = async (uid: string): Promise<void> => {
+      const { data } = await supabase.from("profiles").select("*").eq("id", uid).single();
+      setProfile(data as UserProfile | null);
+    };
+
     supabase.auth.getUser().then(async ({ data }) => {
       setUser(data.user);
       if (data.user) await fetchProfile(data.user.id);
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
         await fetchProfile(session.user.id);
@@ -44,9 +49,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const signOut = async () => {
+    const supabase = createClient();
     await supabase.auth.signOut();
     setUser(null);
     setProfile(null);
