@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 
 type CookieToSet = {
@@ -7,6 +8,7 @@ type CookieToSet = {
   options?: Record<string, unknown>;
 };
 
+// Regular client — respects RLS, uses user session
 export async function createClient() {
   const cookieStore = await cookies();
 
@@ -32,21 +34,11 @@ export async function createClient() {
   );
 }
 
-export async function createAdminClient() {
-  const cookieStore = await cookies();
-
-  return createServerClient(
+// Admin client — bypasses RLS, use only for data fetching in server components
+export function createAdminClient() {
+  return createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(_cookiesToSet: CookieToSet[]) {
-          // Admin client — no cookies needed
-        },
-      },
-    }
+    { auth: { persistSession: false } }
   );
 }

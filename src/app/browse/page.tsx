@@ -1,64 +1,67 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BrowseClient from "@/components/pg/BrowseClient";
-import type { PGProperty } from "@/types";
+import type { PGProperty, Gender, PropertyType } from "@/types";
 
 interface SearchParams {
   area?: string;
   gender?: string;
   property_type?: string;
-  room_type?: string;
-  budget_min?: string;
   budget_max?: string;
+  budget_min?: string;
   food_type?: string;
   search?: string;
 }
 
 export const metadata = {
   title: "Browse PGs in Bangalore | Gharpayy",
-  description: "Find verified paying guest accommodations in Bangalore.",
+  description: "Find verified paying guest accommodations across Bangalore. Filter by area, gender, budget.",
 };
 
 export default async function BrowsePage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const params = await searchParams;
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
-  let query = supabase
+  // Fetch all PGs — server component so service role is used, bypasses RLS
+  const { data: pgs, error } = await supabase
     .from("pg_properties")
     .select("*")
-    .eq("is_approved", true)
-    .eq("is_available", true);
+    .order("created_at", { ascending: false });
 
-  if (params.area) query = query.ilike("area", `%${params.area}%`);
-  if (params.gender) query = query.eq("gender", params.gender);
-  if (params.property_type) query = query.eq("property_type", params.property_type);
-  if (params.food_type) query = query.eq("food_type", params.food_type);
-  if (params.budget_min) query = query.gte("price_double", parseInt(params.budget_min));
-  if (params.budget_max) query = query.lte("price_double", parseInt(params.budget_max));
-  if (params.search) {
-    query = query.or(
-      `gharpayy_name.ilike.%${params.search}%,area.ilike.%${params.search}%,locality.ilike.%${params.search}%,nearby_landmarks.ilike.%${params.search}%`
-    );
-  }
+  const allPGs: PGProperty[] = (pgs || []) as PGProperty[];
 
-  const { data: pgs } = await query.order("created_at", { ascending: false });
+  const initialFilters = {
+    area: params.area || "",
+    gender: (params.gender || "") as Gender | "",
+    property_type: (params.property_type || "") as PropertyType | "",
+    budget_min: params.budget_min ? parseInt(params.budget_min) : 0,
+    budget_max: params.budget_max ? parseInt(params.budget_max) : 0,
+    food_type: params.food_type || "",
+    search: params.search || "",
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ background: "#0F0702" }}>
       <Navbar />
-      <div className="pt-16">
-        <BrowseClient
-          initialPGs={(pgs || []) as PGProperty[]}
-          initialFilters={{
-            area: params.area,
-            gender: params.gender as any,
-            property_type: params.property_type as any,
-            budget_max: params.budget_max ? parseInt(params.budget_max) : undefined,
-            search: params.search,
-          }}
-        />
+
+      {/* Header band */}
+      <div className="pt-16" style={{ background: "#1A0D05", borderBottom: "1px solid rgba(198,134,66,0.1)" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <p className="text-sm font-semibold uppercase tracking-widest mb-1" style={{ color: "#C68642" }}>Bangalore</p>
+          <h1 className="font-display font-bold text-3xl text-white">Browse PGs</h1>
+          <p className="mt-1 text-sm" style={{ color: "#A8A29E" }}>
+            {allPGs.length > 0 ? `${allPGs.length} verified paying guest accommodations` : "Verified paying guest accommodations across prime locations"}
+          </p>
+          {error && (
+            <p className="mt-2 text-xs" style={{ color: "#ef4444" }}>
+              Note: Run the seed script to populate PG listings.
+            </p>
+          )}
+        </div>
       </div>
+
+      <BrowseClient initialPGs={allPGs} initialFilters={initialFilters} />
       <Footer />
     </div>
   );

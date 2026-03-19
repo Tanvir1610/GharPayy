@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Wifi, Utensils, Shield, ChevronRight, Search, Users } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 import PGCard from "@/components/pg/PGCard";
 import HeroSearch from "@/components/pg/HeroSearch";
 import QuickFilters from "@/components/pg/QuickFilters";
@@ -33,7 +33,7 @@ const STATS = [
 ];
 
 export default async function HomePage() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: featuredPGs } = await supabase
     .from("pg_properties")

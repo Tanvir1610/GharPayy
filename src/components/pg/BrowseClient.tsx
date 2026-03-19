@@ -236,7 +236,7 @@ export default function BrowseClient({ initialPGs, initialFilters = {} }: Props)
         {/* Results */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-4">
-            <p className="text-sm font-medium" style={{ color: "#A8A29E" }}>
+            <p className="text-sm font-medium" style={{ color: "#D6D3D1" }}>
               <span className="text-white font-semibold">{filtered.length}</span> PGs found
               {filters.area && <span> in <span style={{ color: "#E0A15A" }}>{filters.area}</span></span>}
             </p>
@@ -246,7 +246,7 @@ export default function BrowseClient({ initialPGs, initialFilters = {} }: Props)
             <div className="text-center py-20">
               <div className="text-5xl mb-4">🏠</div>
               <h3 className="font-display font-semibold text-white text-xl mb-2">No PGs found</h3>
-              <p className="mb-6" style={{ color: "#A8A29E" }}>Try adjusting your filters</p>
+              <p className="mb-6" style={{ color: "#D6D3D1" }}>Try adjusting your filters</p>
               <button onClick={clear} className="btn-primary">Clear filters</button>
             </div>
           ) : (

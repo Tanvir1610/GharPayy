@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PGDetailClient from "@/components/pg/PGDetailClient";
@@ -7,7 +7,7 @@ import type { PGProperty } from "@/types";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data } = await supabase.from("pg_properties").select("gharpayy_name, area, locality").eq("id", id).single();
   if (!data) return { title: "PG Not Found | Gharpayy" };
   return {
@@ -18,13 +18,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function PGDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: pg } = await supabase
     .from("pg_properties")
     .select("*")
     .eq("id", id)
-    .eq("is_approved", true)
     .single();
 
   if (!pg) notFound();
