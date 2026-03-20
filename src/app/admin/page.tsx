@@ -25,7 +25,7 @@ export default async function AdminPage() {
     { count: pendingBookings },
     { data: recentBookings },
     { data: allLeads },
-    { data: pgsByArea },
+    { data: allPGs },
   ] = await Promise.all([
     supabase.from("pg_properties").select("*", { count: "exact", head: true }),
     supabase.from("profiles").select("*", { count: "exact", head: true }),
@@ -35,11 +35,8 @@ export default async function AdminPage() {
       .select("*, pg:pg_properties(gharpayy_name, area), user:profiles(full_name, email)")
       .order("created_at", { ascending: false }).limit(10),
     supabase.from("leads").select("*").order("created_at", { ascending: false }).limit(20),
-    supabase.from("pg_properties").select("area").eq("is_available", true),
+    supabase.from("pg_properties").select("*").order("area", { ascending: true }),
   ]);
-
-  const areaCount: Record<string, number> = {};
-  (pgsByArea || []).forEach(({ area }) => { areaCount[area] = (areaCount[area] || 0) + 1; });
 
   return (
     <div className="min-h-screen" style={{ background: "#0F0702" }}>
@@ -48,8 +45,8 @@ export default async function AdminPage() {
         <AdminClient
           stats={{ totalPGs: totalPGs || 0, totalUsers: totalUsers || 0, totalBookings: totalBookings || 0, pendingBookings: pendingBookings || 0 }}
           recentBookings={recentBookings || []}
+          allPGs={allPGs || []}
           leads={allLeads || []}
-          pgsByArea={areaCount}
         />
       </div>
       <Footer />
