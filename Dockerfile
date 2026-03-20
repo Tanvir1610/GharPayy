@@ -16,7 +16,7 @@ COPY . .
 RUN rm -f tsconfig.tsbuildinfo
 
 # Run build with cache for .next only (NOT tsconfig.tsbuildinfo)
-RUN bash build.sh
+RUN sh build.sh
 # Production runner
 FROM base AS runner
 WORKDIR /app
