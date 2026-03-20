@@ -258,7 +258,7 @@ export default function OwnerDashboardClient({ profile, stats, pgs, bookings, le
           <div className="px-5 py-4" style={{ background: "rgba(26,13,5,0.9)", borderBottom: "1px solid rgba(198,134,66,0.1)" }}>
             <h2 className="font-display text-lg font-bold text-white">All Booking Requests</h2>
           </div>
-          <div className="divide-y" style={{ divideColor: "rgba(198,134,66,0.06)" }}>
+          <div className="">
             {bookings.length === 0 ? (
               <div className="py-12 text-center" style={{ color: "#57534E" }}>No bookings yet</div>
             ) : bookings.map(b => {
@@ -320,7 +320,7 @@ export default function OwnerDashboardClient({ profile, stats, pgs, bookings, le
           <div className="px-5 py-4" style={{ background: "rgba(26,13,5,0.9)", borderBottom: "1px solid rgba(198,134,66,0.1)" }}>
             <h2 className="font-display text-lg font-bold text-white">All Leads & Inquiries</h2>
           </div>
-          <div className="divide-y" style={{ divideColor: "rgba(198,134,66,0.06)" }}>
+          <div className="">
             {leads.length === 0 ? (
               <div className="py-12 text-center" style={{ color: "#57534E" }}>No leads yet</div>
             ) : leads.map(l => {
