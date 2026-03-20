@@ -1,3 +1,4 @@
+// v2
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -104,8 +105,7 @@ export default function Navbar() {
                 </button>
                 {/* Avatar */}
                 {avatar ? (
-                  <img src={avatar} alt="avatar" className="w-9 h-9 rounded-full object-cover ring-2"
-                    <img className="ring-2 ring-[rgba(198,134,66,0.4)]" />
+                  <img src={avatar} alt="avatar" className="w-9 h-9 rounded-full object-cover ring-2 ring-[rgba(198,134,66,0.4)]" />
                 ) : (
                   <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
                     style={{ background: "linear-gradient(135deg,#C68642,#E0A15A)", color: "#0F0702" }}>
