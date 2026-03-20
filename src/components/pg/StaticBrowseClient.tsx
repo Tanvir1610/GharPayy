@@ -89,7 +89,7 @@ export default function StaticBrowseClient({
             value={filters.search}
             onChange={e => setFilters(f => ({ ...f, search: e.target.value }))}
             className="w-full pl-10 pr-4 py-3 rounded-xl text-sm text-white placeholder-stone-500 outline-none focus:ring-1"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(198,134,66,0.2)", focusRingColor: "#C68642" }}
+            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(198,134,66,0.2)" }}
           />
         </div>
         <button
