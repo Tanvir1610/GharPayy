@@ -16,8 +16,7 @@ COPY . .
 RUN rm -f tsconfig.tsbuildinfo
 
 # Run build with cache for .next only (NOT tsconfig.tsbuildinfo)
-RUN --mount=type=cache,target=/app/.next/cache bash build.sh
-
+RUN --mount=type=cache,id=gharpayy-next-cache,target=/app/.next/cache bash build.sh
 # Production runner
 FROM base AS runner
 WORKDIR /app
