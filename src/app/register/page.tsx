@@ -26,13 +26,8 @@ export default function RegisterPage() {
 
           {/* Tenant Card */}
           <Link href="/register/tenant"
-            className="group relative rounded-2xl p-7 flex flex-col gap-4 transition-all duration-200"
-            style={{
-              background: "rgba(26,13,5,0.85)",
-              border: "1px solid rgba(198,134,66,0.18)",
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.border = "1px solid rgba(198,134,66,0.5)"; e.currentTarget.style.background = "rgba(198,134,66,0.07)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.border = "1px solid rgba(198,134,66,0.18)"; e.currentTarget.style.background = "rgba(26,13,5,0.85)"; }}>
+            className="group relative rounded-2xl p-7 flex flex-col gap-4 transition-all duration-200 hover:bg-[rgba(198,134,66,0.07)] hover:border-[rgba(198,134,66,0.5)]"
+            style={{ background: "rgba(26,13,5,0.85)", border: "1px solid rgba(198,134,66,0.18)" }}>
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
               style={{ background: "rgba(198,134,66,0.12)" }}>
               <Search className="w-7 h-7" style={{ color: "#E0A15A" }} />
@@ -57,13 +52,8 @@ export default function RegisterPage() {
 
           {/* Owner Card */}
           <Link href="/register/owner"
-            className="group relative rounded-2xl p-7 flex flex-col gap-4 transition-all duration-200"
-            style={{
-              background: "rgba(26,13,5,0.85)",
-              border: "1px solid rgba(59,130,246,0.18)",
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.border = "1px solid rgba(59,130,246,0.5)"; e.currentTarget.style.background = "rgba(59,130,246,0.07)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.border = "1px solid rgba(59,130,246,0.18)"; e.currentTarget.style.background = "rgba(26,13,5,0.85)"; }}>
+            className="group relative rounded-2xl p-7 flex flex-col gap-4 transition-all duration-200 hover:bg-[rgba(59,130,246,0.07)] hover:border-[rgba(59,130,246,0.5)]"
+            style={{ background: "rgba(26,13,5,0.85)", border: "1px solid rgba(59,130,246,0.18)" }}>
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
               style={{ background: "rgba(59,130,246,0.12)" }}>
               <Building2 className="w-7 h-7" style={{ color: "#93c5fd" }} />
