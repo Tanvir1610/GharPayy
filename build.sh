@@ -13,6 +13,9 @@ export NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL="${NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_UR
 export NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL="${NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL:-/dashboard}"
 export NEXT_PUBLIC_SUPABASE_URL="${NEXT_PUBLIC_SUPABASE_URL:-https://placeholder.supabase.co}"
 export NEXT_PUBLIC_SUPABASE_ANON_KEY="${NEXT_PUBLIC_SUPABASE_ANON_KEY:-placeholder_anon_key}"
+export ADMIN_EMAIL="${ADMIN_EMAIL:-admin@gharpayy.com}"
+export ADMIN_PASSWORD="${ADMIN_PASSWORD:-gharpayy@admin2024}"
+export ADMIN_SESSION_SECRET="${ADMIN_SESSION_SECRET:-gharpayy-admin-secret-2024}"
 export SUPABASE_SERVICE_ROLE_KEY="${SUPABASE_SERVICE_ROLE_KEY:-placeholder_service_role_key}"
 
 echo "→ Building Next.js app..."

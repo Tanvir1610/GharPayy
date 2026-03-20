@@ -1,14 +1,16 @@
-// v2
+// v3 - role-aware navigation
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, Home, LogOut, LayoutDashboard, Shield } from "lucide-react";
+import { Menu, X, Home, LogOut, LayoutDashboard, Shield, Building2, Search } from "lucide-react";
 import { useUser, useClerk } from "@clerk/nextjs";
+import { createClient } from "@/lib/supabase/client";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [role, setRole] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
   const { user, isLoaded } = useUser();
@@ -20,18 +22,31 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Fetch role from Supabase (source of truth)
+  useEffect(() => {
+    if (!user) { setRole(null); return; }
+    createClient()
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single()
+      .then(({ data }) => setRole(data?.role ?? null));
+  }, [user?.id]);
+
   const handleSignOut = async () => {
     await signOut();
     router.push("/");
   };
 
-  // Role stored in Clerk public metadata
-  const role = user?.publicMetadata?.role as string | undefined;
-
   const isHero = pathname === "/";
   const navBg = scrolled || !isHero
     ? "glass border-b border-[rgba(198,134,66,0.12)]"
     : "bg-transparent";
+
+  // Dashboard link varies by role
+  const dashboardHref = role === "owner" ? "/owner/dashboard" : "/dashboard";
+  const dashboardLabel = role === "owner" ? "My Dashboard" : "Dashboard";
+  const DashIcon = role === "owner" ? Building2 : LayoutDashboard;
 
   const navLinks = [
     { href: "/browse", label: "Browse PGs" },
@@ -66,8 +81,7 @@ export default function Navbar() {
                 className="px-3 py-2 rounded-lg text-sm font-medium transition-colors"
                 style={{ color: "#A8A29E" }}
                 onMouseEnter={e => (e.currentTarget.style.color = "#E0A15A")}
-                onMouseLeave={e => (e.currentTarget.style.color = "#A8A29E")}
-              >
+                onMouseLeave={e => (e.currentTarget.style.color = "#A8A29E")}>
                 {link.label}
               </Link>
             ))}
@@ -77,41 +91,50 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             {!isLoaded ? null : user ? (
               <>
-                <Link href="/dashboard"
+                <Link href={dashboardHref}
                   className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
-                  style={{ color: "#A8A29E" }}
+                  style={{ color: pathname.startsWith("/dashboard") || pathname.startsWith("/owner") ? "#E0A15A" : "#A8A29E" }}
                   onMouseEnter={e => (e.currentTarget.style.color = "#E0A15A")}
-                  onMouseLeave={e => (e.currentTarget.style.color = "#A8A29E")}
-                >
-                  <LayoutDashboard className="w-4 h-4" /> Dashboard
+                  onMouseLeave={e => (e.currentTarget.style.color = pathname.startsWith("/dashboard") || pathname.startsWith("/owner") ? "#E0A15A" : "#A8A29E")}>
+                  <DashIcon className="w-4 h-4" /> {dashboardLabel}
                 </Link>
-                {role === "admin" && (
-                  <Link href="/admin"
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
-                    style={{ color: "#A8A29E" }}
-                    onMouseEnter={e => (e.currentTarget.style.color = "#E0A15A")}
-                    onMouseLeave={e => (e.currentTarget.style.color = "#A8A29E")}
-                  >
-                    <Shield className="w-4 h-4" /> Admin
+
+                {/* Owner: show "List PG" shortcut */}
+                {role === "owner" && (
+                  <Link href="/owner/list-pg"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all"
+                    style={{ background: "rgba(198,134,66,0.12)", color: "#E0A15A", border: "1px solid rgba(198,134,66,0.25)" }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(198,134,66,0.2)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(198,134,66,0.12)"; }}>
+                    <Building2 className="w-4 h-4" /> List PG
                   </Link>
                 )}
+
                 <button onClick={handleSignOut}
                   className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
                   style={{ color: "#A8A29E" }}
                   onMouseEnter={e => (e.currentTarget.style.color = "#ef4444")}
-                  onMouseLeave={e => (e.currentTarget.style.color = "#A8A29E")}
-                >
+                  onMouseLeave={e => (e.currentTarget.style.color = "#A8A29E")}>
                   <LogOut className="w-4 h-4" /> Sign out
                 </button>
-                {/* Avatar */}
-                {avatar ? (
-                  <img src={avatar} alt="avatar" className="w-9 h-9 rounded-full object-cover ring-2 ring-[rgba(198,134,66,0.4)]" />
-                ) : (
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
-                    style={{ background: "linear-gradient(135deg,#C68642,#E0A15A)", color: "#0F0702" }}>
-                    {initials}
-                  </div>
-                )}
+
+                {/* Avatar with role badge */}
+                <div className="relative">
+                  {avatar ? (
+                    <img src={avatar} alt="avatar" className="w-9 h-9 rounded-full object-cover ring-2 ring-[rgba(198,134,66,0.4)]" />
+                  ) : (
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
+                      style={{ background: "linear-gradient(135deg,#C68642,#E0A15A)", color: "#0F0702" }}>
+                      {initials}
+                    </div>
+                  )}
+                  {role === "owner" && (
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"
+                      style={{ background: "#3b82f6", border: "2px solid #0F0702" }}>
+                      <Building2 className="w-2 h-2 text-white" />
+                    </div>
+                  )}
+                </div>
               </>
             ) : (
               <>
@@ -119,8 +142,7 @@ export default function Navbar() {
                   className="px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
                   style={{ color: "#D6D3D1" }}
                   onMouseEnter={e => (e.currentTarget.style.color = "#E0A15A")}
-                  onMouseLeave={e => (e.currentTarget.style.color = "#D6D3D1")}
-                >
+                  onMouseLeave={e => (e.currentTarget.style.color = "#D6D3D1")}>
                   Sign in
                 </Link>
                 <Link href="/register" className="btn-primary text-sm px-5 py-2.5">
@@ -152,10 +174,20 @@ export default function Navbar() {
             <div className="pt-3 space-y-2" style={{ borderTop: "1px solid rgba(198,134,66,0.1)" }}>
               {user ? (
                 <>
-                  <Link href="/dashboard" className="block px-3 py-2.5 rounded-xl text-sm font-medium"
-                    style={{ color: "#A8A29E" }} onClick={() => setOpen(false)}>Dashboard</Link>
-                  <button onClick={handleSignOut} className="w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium"
-                    style={{ color: "#ef4444" }}>Sign out</button>
+                  <Link href={dashboardHref} className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium"
+                    style={{ color: "#A8A29E" }} onClick={() => setOpen(false)}>
+                    <DashIcon className="w-4 h-4" />{dashboardLabel}
+                  </Link>
+                  {role === "owner" && (
+                    <Link href="/owner/list-pg" className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold"
+                      style={{ color: "#E0A15A" }} onClick={() => setOpen(false)}>
+                      <Building2 className="w-4 h-4" />List a PG
+                    </Link>
+                  )}
+                  <button onClick={handleSignOut} className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium"
+                    style={{ color: "#ef4444" }}>
+                    <LogOut className="w-4 h-4" />Sign out
+                  </button>
                 </>
               ) : (
                 <>

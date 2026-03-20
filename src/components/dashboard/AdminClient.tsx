@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
-import { Building2, Users, ClipboardList, AlertCircle, TrendingUp, MapPin, CheckCircle, XCircle } from "lucide-react";
+import { Building2, Users, ClipboardList, AlertCircle, TrendingUp, MapPin, CheckCircle, XCircle, LogOut, Shield } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 interface Props {
@@ -46,12 +47,29 @@ export default function AdminClient({ stats, recentBookings, allPGs, leads }: Pr
   const sortedAreas = Object.entries(areaCounts).sort((a, b) => b[1] - a[1]);
   const maxCount = sortedAreas[0]?.[1] || 1;
 
+  const router = useRouter();
+
+  async function handleLogout() {
+    await fetch("/api/admin/auth", { method: "DELETE" });
+    router.push("/admin-login");
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="font-display text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-        <p className="text-gray-500 text-sm mt-1">Gharpayy platform overview</p>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <Shield className="w-5 h-5" style={{ color: "#ef4444" }} />
+            <h1 className="font-display text-2xl font-bold text-white">Admin Dashboard</h1>
+          </div>
+          <p className="text-sm" style={{ color: "#78716C" }}>Gharpayy platform overview · Full access</p>
+        </div>
+        <button onClick={handleLogout}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all"
+          style={{ background: "rgba(239,68,68,0.1)", color: "#f87171", border: "1px solid rgba(239,68,68,0.2)" }}>
+          <LogOut className="w-4 h-4" />Logout
+        </button>
       </div>
 
       {/* Stats */}
