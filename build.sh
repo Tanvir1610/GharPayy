@@ -18,6 +18,9 @@ export ADMIN_PASSWORD="${ADMIN_PASSWORD:-gharpayy@admin2024}"
 export ADMIN_SESSION_SECRET="${ADMIN_SESSION_SECRET:-gharpayy-admin-secret-2024}"
 export SUPABASE_SERVICE_ROLE_KEY="${SUPABASE_SERVICE_ROLE_KEY:-placeholder_service_role_key}"
 
+# Remove stale tsbuildinfo that conflicts with Railway build cache mount
+rm -rf tsconfig.tsbuildinfo
+
 echo "→ Building Next.js app..."
 npx next build
 echo "→ Build complete."
