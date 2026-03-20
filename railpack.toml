@@ -1,5 +1,5 @@
 [build]
-buildCommand = "npm install && bash build.sh"
+builder = "dockerfile"
 
 [deploy]
-startCommand = "npm run start"
+startCommand = "node server.js"

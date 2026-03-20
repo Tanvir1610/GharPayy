@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "drive.google.com" },
@@ -10,7 +11,6 @@ const nextConfig: NextConfig = {
     ],
   },
   eslint: { ignoreDuringBuilds: true },
-  // Ensure server-only code doesn't get bundled into client
   serverExternalPackages: ["svix"],
 };
 
