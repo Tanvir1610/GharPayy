@@ -9,6 +9,7 @@ import type { PGProperty } from "@/types";
 import BookingModal from "@/components/booking/BookingModal";
 import VisitModal from "@/components/booking/VisitModal";
 import { createClient } from "@/lib/supabase/client";
+import { useUser } from "@clerk/nextjs";
 import toast from "react-hot-toast";
 
 interface Review {
@@ -64,13 +65,13 @@ export default function PGDetailClient({ pg, isSaved: initialSaved, reviews, use
   const [bookingOpen, setBookingOpen] = useState(false);
   const [visitOpen, setVisitOpen] = useState(false);
   const supabase = createClient();
+  const { user } = useUser();
 
   const avgRating = reviews.length > 0
     ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
     : null;
 
   const toggleSave = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast.error("Sign in to save PGs"); return; }
     if (saved) {
       await supabase.from("saved_pgs").delete().match({ user_id: user.id, pg_id: pg.id });

@@ -3,15 +3,15 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, Home, LogOut, LayoutDashboard, Shield } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
-import type { UserProfile } from "@/types";
+import { useUser, useClerk } from "@clerk/nextjs";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState<UserProfile | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const { user, isLoaded } = useUser();
+  const { signOut } = useClerk();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -19,30 +19,13 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) {
-        supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", data.user.id)
-          .single()
-          .then(({ data: profile }) => setUser(profile));
-      }
-    });
-    const { data: listener } = supabase.auth.onAuthStateChange((_, session) => {
-      if (!session) setUser(null);
-    });
-    return () => listener.subscription.unsubscribe();
-  }, []);
-
   const handleSignOut = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    setUser(null);
+    await signOut();
     router.push("/");
   };
+
+  // Role stored in Clerk public metadata
+  const role = user?.publicMetadata?.role as string | undefined;
 
   const isHero = pathname === "/";
   const navBg = scrolled || !isHero
@@ -55,6 +38,9 @@ export default function Navbar() {
     { href: "/browse?area=Whitefield", label: "Whitefield" },
     { href: "/post-requirement", label: "Post Requirement" },
   ];
+
+  const avatar = user?.imageUrl;
+  const initials = user?.firstName?.[0] ?? user?.emailAddresses?.[0]?.emailAddress?.[0]?.toUpperCase() ?? "U";
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${navBg}`}>
@@ -72,12 +58,10 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop nav */}
+          {/* Desktop nav links */}
           <div className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
+              <Link key={link.href} href={link.href}
                 className="px-3 py-2 rounded-lg text-sm font-medium transition-colors"
                 style={{ color: "#A8A29E" }}
                 onMouseEnter={e => (e.currentTarget.style.color = "#E0A15A")}
@@ -90,7 +74,7 @@ export default function Navbar() {
 
           {/* Desktop right */}
           <div className="hidden md:flex items-center gap-3">
-            {user ? (
+            {!isLoaded ? null : user ? (
               <>
                 <Link href="/dashboard"
                   className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
@@ -98,18 +82,16 @@ export default function Navbar() {
                   onMouseEnter={e => (e.currentTarget.style.color = "#E0A15A")}
                   onMouseLeave={e => (e.currentTarget.style.color = "#A8A29E")}
                 >
-                  <LayoutDashboard className="w-4 h-4" />
-                  Dashboard
+                  <LayoutDashboard className="w-4 h-4" /> Dashboard
                 </Link>
-                {user.role === "admin" && (
+                {role === "admin" && (
                   <Link href="/admin"
                     className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
                     style={{ color: "#A8A29E" }}
                     onMouseEnter={e => (e.currentTarget.style.color = "#E0A15A")}
                     onMouseLeave={e => (e.currentTarget.style.color = "#A8A29E")}
                   >
-                    <Shield className="w-4 h-4" />
-                    Admin
+                    <Shield className="w-4 h-4" /> Admin
                   </Link>
                 )}
                 <button onClick={handleSignOut}
@@ -118,13 +100,18 @@ export default function Navbar() {
                   onMouseEnter={e => (e.currentTarget.style.color = "#ef4444")}
                   onMouseLeave={e => (e.currentTarget.style.color = "#A8A29E")}
                 >
-                  <LogOut className="w-4 h-4" />
-                  Sign out
+                  <LogOut className="w-4 h-4" /> Sign out
                 </button>
-                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
-                  style={{ background: "linear-gradient(135deg,#C68642,#E0A15A)", color: "#0F0702" }}>
-                  {user.full_name?.[0]?.toUpperCase() || "U"}
-                </div>
+                {/* Avatar */}
+                {avatar ? (
+                  <img src={avatar} alt="avatar" className="w-9 h-9 rounded-full object-cover ring-2"
+                    style={{ ringColor: "rgba(198,134,66,0.4)" }} />
+                ) : (
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
+                    style={{ background: "linear-gradient(135deg,#C68642,#E0A15A)", color: "#0F0702" }}>
+                    {initials}
+                  </div>
+                )}
               </>
             ) : (
               <>
@@ -144,11 +131,8 @@ export default function Navbar() {
           </div>
 
           {/* Mobile hamburger */}
-          <button
-            className="md:hidden p-2 rounded-xl transition-colors"
-            style={{ color: "#D6D3D1" }}
-            onClick={() => setOpen(!open)}
-          >
+          <button className="md:hidden p-2 rounded-xl transition-colors"
+            style={{ color: "#D6D3D1" }} onClick={() => setOpen(!open)}>
             {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
@@ -160,10 +144,8 @@ export default function Navbar() {
           <div className="px-4 py-4 space-y-1">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}
-                className="block px-3 py-2.5 rounded-xl text-sm font-medium transition-colors"
-                style={{ color: "#A8A29E" }}
-                onClick={() => setOpen(false)}
-              >
+                className="block px-3 py-2.5 rounded-xl text-sm font-medium"
+                style={{ color: "#A8A29E" }} onClick={() => setOpen(false)}>
                 {link.label}
               </Link>
             ))}

@@ -54,8 +54,8 @@ export default async function BrowsePage({ searchParams }: { searchParams: Promi
             {allPGs.length > 0 ? `${allPGs.length} verified paying guest accommodations` : "Verified paying guest accommodations across prime locations"}
           </p>
           {error && (
-            <p className="mt-2 text-xs" style={{ color: "#ef4444" }}>
-              Note: Run the seed script to populate PG listings.
+            <p className="mt-2 text-xs font-mono" style={{ color: "#ef4444" }}>
+              DB Error: {error.message}
             </p>
           )}
         </div>
