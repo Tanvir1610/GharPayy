@@ -1,0 +1,5 @@
+[build]
+buildCommand = "npm install && bash build.sh"
+
+[deploy]
+startCommand = "npm run start"
